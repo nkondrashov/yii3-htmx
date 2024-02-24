@@ -11,10 +11,10 @@
 
 This [Yii Framework] extension encapsulates basic functions [htmx] and makes using in Yii applications extremely easy.
 
+You can see examples in [yii3-demo-htmx](https://github.com/nkondrashov/yii3-demo-htmx) application.
+
 [Yii Framework]:        http://www.yiiframework.com/
 [</> htmx]:  https://htmx.org/docs/
-
-For license information check the [LICENSE](LICENSE.md)-file.
 
 Installation
 ------------
