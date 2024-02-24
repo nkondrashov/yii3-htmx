@@ -10,19 +10,29 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Yiisoft\Json\Json;
 
-final class HTMXMiddleware implements MiddlewareInterface
+class HTMXMiddleware implements MiddlewareInterface
 {
+    public function __construct(private HTMXHeaderManager $eventManager)
+    {
+    }
+
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+        foreach ($request->getHeaders() as $headerName => $value) {
+            if (strpos($headerName, 'HX-') !== false){
+                $this->eventManager->setRequestHeader($headerName, current($value));
+            }
+        }
+
         $response = $handler->handle($request);
 
-        if ($request->hasHeader('Hx-Response-Events')) {
-            $HTMXResponseHeader = $request->getHeader('Hx-Response-Events');
-            $value = current($HTMXResponseHeader);
-            $decoded = Json::decode($value);
-            foreach ($decoded as $header => $events)
-                $response = $response->withHeader($header, Json::encode($events));
-        }
+        $events = $this->eventManager->getResponseEvents();
+        foreach ($events as $header => $list)
+            $response = $response->withHeader($header, Json::encode($list));
+
+        $events = $this->eventManager->getTXHeaders();
+        foreach ($events as $header => $list)
+            $response = $response->withHeader($header, $list);
 
         return $response;
     }

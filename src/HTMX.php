@@ -11,16 +11,6 @@ use Yiisoft\Json\Json;
  */
 class HTMX
 {
-    private const AFTER_REQUEST_EVENT = 'HX-Trigger';
-    private const AFTER_SETTLE_EVENT = 'HX-Trigger-After-Settle';
-    private const AFTER_SWAP_EVENT = 'HX-Trigger-After-Swap';
-
-    private array $events = [
-        self::AFTER_REQUEST_EVENT => [],
-        self::AFTER_SETTLE_EVENT => [],
-        self::AFTER_SWAP_EVENT => [],
-    ];
-
     private array $triggers = [];
 
     private array $extensions = [];
@@ -316,65 +306,6 @@ class HTMX
         }
 
         return $this->addTriggers(...$prepared);
-    }
-
-    /**
-     * Technical method for send headers to mirror-middleware
-     *
-     * @return $this
-     */
-    private function prepareAndSetCustomEvents(): static
-    {
-        $events = array_filter($this->events, fn(array $item) => count($item) > 0);
-        $eventsEncoded = Json::encode($events);
-        $this->tag = $this->tag->addAttributes(['hx-headers' => ['Hx-Response-Events' => $eventsEncoded]]);
-
-        return $this;
-    }
-
-    /**
-     * Simply interface for send custom events to mirror-middleware for execute as soon as the response is received.
-     * More: https://htmx.org/headers/hx-trigger/
-     *
-     * @param string $eventName Event name
-     * @param array|string $data Event data
-     * @return $this
-     */
-    public function triggerCustomEventAfterRequest(string $eventName, array|string $data = ''): self
-    {
-        $this->events[self::AFTER_REQUEST_EVENT][$eventName] = $data;
-
-        return $this->prepareAndSetCustomEvents();
-    }
-
-    /**
-     * Simply interface for send custom events to mirror-middleware for execute after the swap step.
-     * More: https://htmx.org/headers/hx-trigger/
-     *
-     * @param string $eventName Event name
-     * @param array|string $data Event data
-     * @return $this
-     */
-    public function triggerCustomEventAfterSwap(string $eventName, array|string $data = ''): self
-    {
-        $this->events[self::AFTER_SWAP_EVENT][$eventName] = $data;
-
-        return $this->prepareAndSetCustomEvents();
-    }
-
-    /**
-     * Simply interface for send custom events to mirror-middleware for execute after the settling step.
-     * More: https://htmx.org/headers/hx-trigger/
-     *
-     * @param string $eventName Event name
-     * @param array|string $data Event data
-     * @return $this
-     */
-    public function triggerCustomEventAfterSettle(string $eventName, array|string $data = ''): self
-    {
-        $this->events[self::AFTER_SETTLE_EVENT][$eventName] = $data;
-
-        return $this->prepareAndSetCustomEvents();
     }
 
     /**

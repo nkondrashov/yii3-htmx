@@ -22,7 +22,7 @@ Installation
 1. The preferred way to install this extension is through [composer](http://getcomposer.org/download/).
 
 ```
-php composer.phar require --prefer-dist nkondrashov/yii3-htmx
+php composer.phar require nkondrashov/yii3-htmx "^0.2"
 ```
 
 2. Add `HTMXMiddleware.php` to router.
@@ -64,7 +64,6 @@ $tag = Yiisoft\Html\Html::button('[ X ]']);
 
 $htmx = HTMX::make($tag)
             ->request(Yiisoft\Http\Method::DELETE, '/item/delete/' . $todo->id)
-            ->triggerCustomEventAfterRequest('someCustomEvent')
             ->setSwap('none')
             ->runOnClick();
 
@@ -90,7 +89,6 @@ $tag = Yiisoft\Html\Html::button('[ X ]']);
 
 $htmx = HTMX::make($tag)
             ->request(Yiisoft\Http\Method::DELETE, '/item/delete/' . $todo->id)
-            ->triggerCustomEventAfterRequest('someCustomEvent')
             ->addTriggers('click')
             ->setSwap('none');
 
@@ -116,7 +114,6 @@ $tag = Yiisoft\Html\Html::button('[ X ]']);
 
 $htmx = HTMX::make($tag)
             ->setHx('delete', '/item/delete/' . $todo->id)
-            ->triggerCustomEventAfterRequest('someCustomEvent')
             ->setHx('trigger', 'click')
             ->setHx('swap', 'none');
 
@@ -133,6 +130,28 @@ echo $htmx;
         ->setHx('get', '/item/index')
         ->setHx('trigger', 'load, someCustomEvent from:body, someCustomEvent2 from:body');
 ?>
+```
+
+Send htmx headers in response:
+```php
+//Definition:
+...
+    public function __construct(private HTMXHeaderManager $headerManager)
+    {}
+...
+
+//In code:
+$this->headerManager->triggerCustomEventAfterSwap('updateList');
+//or native:
+$this->headerManager->sendHXHeader('Trigger', 'updateList');
+
+//Detect htmx request:
+if ($this->headerManager->isHtmxRequest()) {
+    //Example: This request without htmx header
+}
+
+//Get data from header:
+$value = $this->headerManager->getRequestHeader('Hx-Trigger-Name');
 ```
 
 

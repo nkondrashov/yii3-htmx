@@ -6,7 +6,7 @@ namespace Nkondrashov\Yii3\Htmx;
 
 use Yiisoft\Assets\AssetBundle;
 
-final class HTMXAsset extends AssetBundle
+class HTMXAsset extends AssetBundle
 {
     public ?string $basePath = '@assets';
 
