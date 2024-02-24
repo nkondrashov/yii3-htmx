@@ -17,7 +17,7 @@
     "license": "BSD-3-Clause",
     "autoload": {
         "psr-4": {
-            "Nkondrashov\\Yii3\\Htmx\\": "src/"
+            "Nkondrashov\\Yii3\\Htmx\\": "src"
         }
     },
     "authors": [

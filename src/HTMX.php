@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace nkondrashov\yii3\htmx;
+namespace Nkondrashov\Yii3\Htmx;
 
 use Yiisoft\Html\Tag\Base\Tag;
 use Yiisoft\Json\Json;
